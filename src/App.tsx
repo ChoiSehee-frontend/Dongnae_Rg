@@ -11,7 +11,7 @@ import type { FeatureCollection, Geometry } from 'geojson'
 import type { Map as LeafletMap, LatLngExpression } from 'leaflet'
 import population from './data/population.json'
 import { ProjectStory } from './ProjectStory'
-import { TownHome, TownPicker, TownLayer, LocateButton, credit } from './Towns'
+import { TownHome, TownPicker, TownLayer, LocateButton, credit, towns } from './Towns'
 import { CityCharts } from './CityCharts'
 import regions from './data/regions.json'
 import boundaryJson from './data/administrative-boundaries.geojson?raw'
@@ -46,6 +46,7 @@ const gyeongbuk: Region = {
   zoom: 8,
 }
 const pohangCenter: LatLngExpression = [36.019, 129.3435]
+const heunghae = towns.find((town) => town.name === '흥해읍')
 
 function MapView({ center, zoom }: { center: LatLngExpression; zoom: number }) {
   const map = useMap()
@@ -103,7 +104,7 @@ function App() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <a className="brand" href="#" onClick={reset} aria-label="포항 도시계획 홈">
+        <a className="brand" href="#" onClick={reset} aria-label="동네알기 홈">
           <span className="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
               <path d="M4 23.5 13 8l5 8 3-4.5L28 23.5H4Z" />
@@ -117,7 +118,10 @@ function App() {
         </a>
         <nav className="top-nav" aria-label="페이지 탐색">
           <a href="#explore-map">지역 탐색</a>
-          <a href="#city-indicators">이용 안내</a>
+          <a href="#city-indicators" onClick={() => {
+            reset()
+            window.requestAnimationFrame(() => document.getElementById('city-indicators')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+          }}>이용 안내</a>
           <a href="#data-sources">자료 기준</a>
         </nav>
         <div className="header-note">
@@ -189,16 +193,16 @@ function App() {
         <section className="main-content" aria-label="지도와 도시계획 정보">
           <div className="page-heading" id="explore-map">
             <div className="hero-copy">
-              <span className="hero-kicker">POHANG CITY · NEIGHBORHOOD ARCHIVE</span>
+              <span className="hero-kicker">DONGNAE ALGI · NEIGHBORHOOD ARCHIVE</span>
               <div className="breadcrumb">
                 <button onClick={reset}>전국</button>
                 {selectedProvince && <><span className="crumb-slash">/</span><button onClick={() => chooseProvince(selectedProvince)}>{selectedProvince.name}</button></>}
                 {isPohangSelected && <><span className="crumb-slash">/</span><span className="current-crumb">포항시</span></>}
               </div>
-              <h2>{isPohangSelected ? '포항에서 내 동네를 찾아보세요' : selectedProvince ? `${selectedProvince.name} 지역을 살펴보세요` : '대한민국 도시계획 지도'}</h2>
-              <p>지도를 따라 우리 동네의 지금과, 도시가 그려온 내일을 살펴봅니다.</p>
+              <h2>우리 동네의 오늘과 내일을 살펴보세요</h2>
+              <p>우리 동네의 현재 모습부터 도시계획과 실제 변화까지, 지도에서 한눈에 살펴보세요.</p>
             </div>
-            <span className="demo-badge">{selectedProvince && selectedProvince.name !== gyeongbuk.name ? '이 지역 상세 서비스는 준비 중' : '포항 시범 서비스'}</span>
+            <span className="demo-badge">{selectedProvince && selectedProvince.name !== gyeongbuk.name ? '이 지역 상세 서비스는 준비 중' : '포항시 시범 운영'}</span>
           </div>
 
           <div className="story-index" aria-label="탐색 순서">
@@ -208,6 +212,12 @@ function App() {
             <i aria-hidden="true" />
             <span><b>03</b> 자료로 확인합니다</span>
           </div>
+
+          {!selectedProvince && !isPohangSelected && (
+            <section className="indicators home-guide-zone" id="city-indicators" aria-label="동네알기 이용 안내">
+              <CityCharts />
+            </section>
+          )}
 
           <div className="location-summary" id="location-summary"><div><span>{regionName} 인구</span><strong>{pop ? pop.value.toLocaleString('ko-KR')+'명' : '자료 미확보'}</strong></div>{pop && <small>{pop.date} 기준 · 외국인 제외 · <a href={pop.url} target="_blank" rel="noreferrer">통계 출처 ↗</a></small>}</div>
           <div className="map-layout">
@@ -252,11 +262,60 @@ function App() {
             </section>
 
             <aside className="detail-card" aria-live="polite">
-              {isPohangSelected ? <TownPicker/> : <><h3>내 동네를 선택하세요</h3><p>경상북도에서 포항으로 들어가거나, 동네 이름으로 바로 검색할 수 있어요.</p></>}
+              {isPohangSelected ? <TownPicker/> : (
+                <div className="pilot-panel">
+                  <header className="pilot-header">
+                    <span className="pilot-overline">START EXPLORING</span>
+                    <h3>{selectedProvince ? `선택한 지역 · ${selectedProvince.name}` : '어느 동네를 살펴볼까요?'}</h3>
+                    <p>{selectedProvince ? '지도에서 다른 시·도를 선택하거나, 아래 시범 지역을 살펴보세요.' : '지도에서 지역을 선택하거나, 현재 자료가 준비된 시범 지역에서 탐색을 시작하세요.'}</p>
+                  </header>
+
+                  {selectedProvince && selectedProvince.name !== gyeongbuk.name && (
+                    <div className="pilot-availability" role="status">
+                      <span aria-hidden="true">ⓘ</span>
+                      {selectedProvince.name}의 상세 동네 자료는 아직 준비 중입니다.
+                    </div>
+                  )}
+
+                  <div className="pilot-feature">
+                    <div className="pilot-feature-top">
+                      <span className="pilot-feature-label">현재 탐색 가능한 시범 지역</span>
+                      <span className="pilot-feature-tag">제공 중</span>
+                    </div>
+                    <div className="pilot-path" aria-label="시범 지역 위치">
+                      <span>경상북도</span><span aria-hidden="true">›</span>
+                      <span>포항시</span><span aria-hidden="true">›</span>
+                      <strong>흥해읍</strong>
+                    </div>
+                    <h4>흥해읍의 도시계획과 변화</h4>
+                    <p>공원과 생활시설 현황부터 성곡·이인·초곡·남옥·곡강 5개 개발지구의 계획과 추진 기록까지 살펴볼 수 있습니다.</p>
+                    <div className="pilot-facts" aria-label="제공 중인 자료">
+                      <span>4단계 동네 탐색</span>
+                      <span>개발지구 상세 5곳</span>
+                    </div>
+                    <div className="pilot-actions">
+                      <button type="button" className="pilot-primary" onClick={selectPohang}>
+                        포항시 지도 보기 <span aria-hidden="true">→</span>
+                      </button>
+                      {heunghae && <a className="pilot-secondary" href={`#town/${heunghae.id}`}>
+                        흥해읍 바로 탐색 <span aria-hidden="true">↗</span>
+                      </a>}
+                    </div>
+                  </div>
+
+                  <div className="pilot-help">
+                    <span className="pilot-help-symbol" aria-hidden="true">⌖</span>
+                    <div>
+                      <strong>지도 탐색 안내</strong>
+                      <p>왼쪽 지도나 지역 선택 메뉴에서 시·도를 선택하세요. 현재 상세 콘텐츠는 포항시를 중심으로 제공됩니다.</p>
+                    </div>
+                  </div>
+                  <p className="pilot-footer">전국으로 확장 가능한 서비스 구조를 바탕으로 포항시에서 시범 운영하고 있습니다.</p>
+                </div>
+              )}
             </aside>
           </div>
 
-          {isPohangSelected && <section className="indicators" id="city-indicators" aria-label="동네알기 이용 안내"><CityCharts/></section>}
           <details className="boundary-note" id="data-sources"><summary>지도 경계의 기준연도와 출처</summary><p>시·도는 2021년, 경북 화면의 포항 외곽은 2020년 경계입니다. 광주와 전남은 당시 경계로 나뉘어 있으며 현재 행정구역과 다를 수 있습니다. 지역 이름은 서비스의 탐색용 표기입니다.</p><p>{credit}</p><p>geoBoundaries / Natural Earth · 포항: geoBoundaries / citypopulation.de (CC BY 3.0)</p></details>
           <footer className="page-footer">
             <span>포항 도시기본계획 시각화 · 자료 기반 화면</span>
