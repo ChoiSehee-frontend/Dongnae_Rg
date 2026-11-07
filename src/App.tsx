@@ -117,7 +117,7 @@ function App() {
         </a>
         <nav className="top-nav" aria-label="페이지 탐색">
           <a href="#explore-map">지역 탐색</a>
-          <a href="#location-summary">도시 지표</a>
+          <a href="#city-indicators">이용 안내</a>
           <a href="#data-sources">자료 기준</a>
         </nav>
         <div className="header-note">
@@ -256,7 +256,7 @@ function App() {
             </aside>
           </div>
 
-          {isPohangSelected && <section className="indicators" id="city-indicators" aria-label="포항 인구 추이"><CityCharts/></section>}
+          {isPohangSelected && <section className="indicators" id="city-indicators" aria-label="동네알기 이용 안내"><CityCharts/></section>}
           <details className="boundary-note" id="data-sources"><summary>지도 경계의 기준연도와 출처</summary><p>시·도는 2021년, 경북 화면의 포항 외곽은 2020년 경계입니다. 광주와 전남은 당시 경계로 나뉘어 있으며 현재 행정구역과 다를 수 있습니다. 지역 이름은 서비스의 탐색용 표기입니다.</p><p>{credit}</p><p>geoBoundaries / Natural Earth · 포항: geoBoundaries / citypopulation.de (CC BY 3.0)</p></details>
           <footer className="page-footer">
             <span>포항 도시기본계획 시각화 · 자료 기반 화면</span>

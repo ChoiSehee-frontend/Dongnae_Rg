@@ -1,0 +1,80 @@
+{
+  "projectId": "gokgang",
+  "location": "경상북도 포항시 북구 흥해읍 곡강리 산148-2번지 일원",
+  "notices": {
+    "2024": {
+      "number": "포항시 고시 제2024-320호",
+      "date": "2024-09-11",
+      "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=600317",
+      "pdfPageLandUse": 2,
+      "pdfPageHousing": 7,
+      "pdfPageBuilding": 9,
+      "pdfPageReasons": 12,
+      "sourceSaysUnchanged": [
+        "사업기간(2025-12-31까지)",
+        "개발구역 면적",
+        "토지이용계획",
+        "기반시설 설치계획",
+        "인구수용계획"
+      ],
+      "description": "실정보고 사항에 따른 공사계획(계획고 등) 변경 및 실시설계에 따른 사업비 변경이 주요 신청 사유로 명시. 세부 증감액과 시공 실적은 첨부 고시에서 확인되지 않음.",
+      "note": "변경 신청 사유에 사업기간 연장 문구가 있으나 고시 본문에서는 사업기간을 변경없음으로 표시. 본문에 명시된 종료일은 2025-12-31."
+    },
+    "2026": {
+      "number": "포항시 고시 제2026-28호",
+      "date": "2026-01-28",
+      "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=638365",
+      "pdfPageDuration": 2,
+      "previousEnd": "2025-12-31",
+      "revisedEnd": "2027-12-31",
+      "description": "실시계획 시행기간 종료일을 2025년 12월 31일에서 2027년 12월 31일로 2년 연장. 구역 위치·면적과 도시관리계획은 변경없음."
+    }
+  },
+  "landUse2024": {
+    "total": 267342,
+    "residential": 160844,
+    "detached": 104613,
+    "apartment": 56231,
+    "publicFacility": 106498,
+    "elementarySchool": 12235,
+    "childrenParks": 7969,
+    "parking": 1607,
+    "roads": 65442,
+    "greenBuffer": 15623,
+    "retention": 3377,
+    "waterSupply": 245,
+    "childrenParkCount": 4,
+    "parkingCount": 2,
+    "elementarySchoolCount": 1,
+    "bufferCount": 5,
+    "roadsCount": 32,
+    "roadsLengthM": 5051,
+    "pedestrianRoadArea": 1152,
+    "plannedHouseholds": 1958,
+    "plannedDetachedHouseholds": 396,
+    "plannedApartmentHouseholds": 1562,
+    "plannedPopulation": 6356,
+    "adjacentUniversityMaxFloors": 12,
+    "apartmentMaxFloors": 25,
+    "adjacentUniversityStripM": 30,
+    "sightlineMinWidthM": 20,
+    "universityBoundaryBuildingSetbackM": 10
+  },
+  "basis": {
+    "landUse": "2024-320호 PDF 2쪽: 토지이용계획 (변경없음)",
+    "population": "2024-320호 PDF 7쪽: 인구수용계획 (변경없음)",
+    "height": "2024-320호 PDF 9~10쪽: 건축물 높이·배치·건축선",
+    "changes2024": "2024-320호 PDF 2~3쪽, 11~12쪽: 변경없음 표기와 신청 사유",
+    "changes2026": "2026-28호 PDF 1~2쪽: 시행기간 변경",
+    "baseline2015": "2030 포항 도시기본계획 PDF 52쪽, 2016 포항통계연보 인용 흥해읍 인구 34,642명"
+  },
+  "warnings": [
+    "2024년 고시 수록 토지이용계획은 2024년 변경내용이 아닌, 2024년 고시 시점에 유효한 변경 없는 계획 수치임.",
+    "265,600㎡(2030 도시기본계획 수록 당시)와 267,342㎡(2024·2026 고시)의 차이는 확인되지만 이번 제공 PDF만으로 면적 변경이 발생한 날짜를 특정할 수 없음.",
+    "공원·학교·주차장의 계획상 개소수는 실제 준공·개방 개소수가 아님.",
+    "2015년 도시기본계획 인용 통계와 2023~2024년 SGIS 통계는 출처·집계기준이 다르므로 직접 증감률을 계산하지 않음.",
+    "2030 포항 도시기본계획에는 흥해읍에 단독 배분된 2030년 인구 목표가 확인되지 않음.",
+    "2024년 고시에서 구체적 시공수량·변경 사업비가 제시되지 않아 변경 전후 숫자 비교를 만들지 않음.",
+    "2027-12-31은 고시된 시행기간 종료일이며 공사 준공·입주일 또는 개방일을 보장하지 않음."
+  ]
+}

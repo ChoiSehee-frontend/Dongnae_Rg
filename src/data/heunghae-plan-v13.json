@@ -1,0 +1,102 @@
+{
+  "area": "흥해읍",
+  "source": "2030 포항 도시기본계획 PDF 125쪽(표 4-13), 277쪽(표 7-18)",
+  "projects": [
+    {
+      "id": "seonggok",
+      "name": "성곡지구",
+      "place": "흥해읍 성곡리",
+      "planArea": 207766,
+      "theme": "주거지역 개발",
+      "detailAvailable": true,
+      "planPeriod": "2007.03 ~ 환지처분일",
+      "summary": "성곡리 일원에 수록된 도시개발사업",
+      "notice": {
+        "date": "2018-03-15",
+        "number": "포항시 제2018-37호",
+        "title": "도시개발구역·개발계획·실시계획 변경",
+        "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=380337"
+      }
+    },
+    {
+      "id": "iin",
+      "name": "이인지구",
+      "place": "흥해읍 이인리",
+      "planArea": 1012300,
+      "theme": "주거지역 개발",
+      "detailAvailable": true,
+      "planPeriod": "2011.04 ~ 2016.04",
+      "summary": "이인리 일원에 수록된 도시개발사업",
+      "notice": {
+        "date": "2026-09-09",
+        "number": "포항시 제2026-255호",
+        "title": "실시계획 변경인가",
+        "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=641004"
+      }
+    },
+    {
+      "id": "chogok",
+      "name": "초곡지구",
+      "place": "흥해읍 초곡리",
+      "planArea": 974686,
+      "theme": "주거지역 개발",
+      "detailAvailable": true,
+      "planPeriod": "2011.05 ~ 2016.05",
+      "summary": "초곡리 일원에 수록된 도시개발사업",
+      "notice": {
+        "date": "2017-01-04",
+        "number": "포항시 제2017-3호",
+        "title": "실시계획 변경인가",
+        "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=365995"
+      }
+    },
+    {
+      "id": "namok",
+      "name": "남옥지구",
+      "place": "흥해읍 남성·옥성리",
+      "planArea": 175931,
+      "theme": "주거지역 개발",
+      "detailAvailable": true,
+      "planPeriod": "2012.08 ~ 2017.08",
+      "summary": "남성리·옥성리 일원에 수록된 도시개발사업",
+      "notice": {
+        "date": "2021-03-16",
+        "number": "포항시 제2021-42호",
+        "title": "실시계획 변경인가",
+        "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=509180"
+      }
+    },
+    {
+      "id": "gokgang",
+      "name": "곡강지구",
+      "place": "흥해읍 곡강리",
+      "planArea": 265600,
+      "theme": "주거·생활기반시설 개발",
+      "detailAvailable": true,
+      "planPeriod": "2014.12 ~ 2017.12",
+      "summary": "주거용지와 학교·공원·도로 등을 계획한 도시개발사업"
+    }
+  ],
+  "regionPopulation": {
+    "name": "북부생활권",
+    "memberTowns": [
+      "흥해읍",
+      "신광면",
+      "청하면",
+      "송라면",
+      "기계면",
+      "죽장면",
+      "기북면"
+    ],
+    "baseline2015": 55674,
+    "target2025": 120000,
+    "target2030": 122000,
+    "source": "2030 포항 도시기본계획 PDF 123쪽, 표 4-12",
+    "baselineSource": "2030 포항 도시기본계획 PDF 119쪽, 표 4-9"
+  },
+  "townBaseline": {
+    "name": "흥해읍",
+    "population2015": 34642,
+    "source": "2030 포항 도시기본계획 PDF 52쪽, 표 2-12: 2016 포항통계연보 인용"
+  }
+}
