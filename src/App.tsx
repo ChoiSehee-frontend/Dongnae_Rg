@@ -106,18 +106,23 @@ function App() {
         <a className="brand" href="#" onClick={reset} aria-label="포항 도시계획 홈">
           <span className="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
-              <path d="M5 24.5 13.5 7l5 10 3-5L27 24.5H5Z" />
-              <path d="M10 24.5h15" />
+              <path d="M4 23.5 13 8l5 8 3-4.5L28 23.5H4Z" />
+              <path d="M9 23.5h16M13 18h6" />
             </svg>
           </span>
           <span className="brand-copy">
             <strong>동네알기</strong>
-            <span>URBAN PLAN · POHANG</span>
+            <span>POHANG · URBAN ARCHIVE</span>
           </span>
         </a>
+        <nav className="top-nav" aria-label="페이지 탐색">
+          <a href="#explore-map">지역 탐색</a>
+          <a href="#location-summary">도시 지표</a>
+          <a href="#data-sources">자료 기준</a>
+        </nav>
         <div className="header-note">
           <span className="live-dot" />
-          <span>계획 정보를 한눈에</span>
+          <span>계획을 읽고, 동네를 보다</span>
           <span className="header-divider" />
           <span>2026</span>
         </div>
@@ -182,19 +187,29 @@ function App() {
         </aside>
 
         <section className="main-content" aria-label="지도와 도시계획 정보">
-          <div className="page-heading">
-            <div>
+          <div className="page-heading" id="explore-map">
+            <div className="hero-copy">
+              <span className="hero-kicker">POHANG CITY · NEIGHBORHOOD ARCHIVE</span>
               <div className="breadcrumb">
                 <button onClick={reset}>전국</button>
                 {selectedProvince && <><span className="crumb-slash">/</span><button onClick={() => chooseProvince(selectedProvince)}>{selectedProvince.name}</button></>}
                 {isPohangSelected && <><span className="crumb-slash">/</span><span className="current-crumb">포항시</span></>}
               </div>
               <h2>{isPohangSelected ? '포항에서 내 동네를 찾아보세요' : selectedProvince ? `${selectedProvince.name} 지역을 살펴보세요` : '대한민국 도시계획 지도'}</h2>
+              <p>지도를 따라 우리 동네의 지금과, 도시가 그려온 내일을 살펴봅니다.</p>
             </div>
             <span className="demo-badge">{selectedProvince && selectedProvince.name !== gyeongbuk.name ? '이 지역 상세 서비스는 준비 중' : '포항 시범 서비스'}</span>
           </div>
 
-          <div className="location-summary"><div><span>{regionName} 인구</span><strong>{pop ? pop.value.toLocaleString('ko-KR')+'명' : '자료 미확보'}</strong></div>{pop && <small>{pop.date} 기준 · 외국인 제외 · <a href={pop.url} target="_blank" rel="noreferrer">통계 출처 ↗</a></small>}</div>
+          <div className="story-index" aria-label="탐색 순서">
+            <span><b>01</b> 지역을 고르고</span>
+            <i aria-hidden="true" />
+            <span><b>02</b> 지도에서 찾고</span>
+            <i aria-hidden="true" />
+            <span><b>03</b> 자료로 확인합니다</span>
+          </div>
+
+          <div className="location-summary" id="location-summary"><div><span>{regionName} 인구</span><strong>{pop ? pop.value.toLocaleString('ko-KR')+'명' : '자료 미확보'}</strong></div>{pop && <small>{pop.date} 기준 · 외국인 제외 · <a href={pop.url} target="_blank" rel="noreferrer">통계 출처 ↗</a></small>}</div>
           <div className="map-layout">
             <section className="map-card" aria-label="지역 지도">
               <div className="map-topline">
@@ -224,10 +239,10 @@ function App() {
                     onEachFeature={(f,l)=>{ const n=String(f.properties?.name);l.bindTooltip(n);l.on('click',()=>{if(n==='포항시')selectPohang();else {const r=regionList.find(v=>v.name===n);if(r)chooseProvince(r)}})}}
 
                     style={f=>({
-                      color: '#237967',
+                      color: '#315f91',
                       weight: 2,
-                      fillColor: '#78b7a0',
-                      fillOpacity: f?.properties?.name===regionName ? .38 : .08,
+                      fillColor: '#7fa9d1',
+                      fillOpacity: f?.properties?.name===regionName ? .4 : .07,
                     })}
                   />
                 )}
@@ -241,8 +256,8 @@ function App() {
             </aside>
           </div>
 
-          {isPohangSelected && <section className="indicators" aria-label="포항 인구 추이"><CityCharts/></section>}
-          <details className="boundary-note"><summary>지도 경계의 기준연도와 출처</summary><p>시·도는 2021년, 경북 화면의 포항 외곽은 2020년 경계입니다. 광주와 전남은 당시 경계로 나뉘어 있으며 현재 행정구역과 다를 수 있습니다. 지역 이름은 서비스의 탐색용 표기입니다.</p><p>{credit}</p><p>geoBoundaries / Natural Earth · 포항: geoBoundaries / citypopulation.de (CC BY 3.0)</p></details>
+          {isPohangSelected && <section className="indicators" id="city-indicators" aria-label="포항 인구 추이"><CityCharts/></section>}
+          <details className="boundary-note" id="data-sources"><summary>지도 경계의 기준연도와 출처</summary><p>시·도는 2021년, 경북 화면의 포항 외곽은 2020년 경계입니다. 광주와 전남은 당시 경계로 나뉘어 있으며 현재 행정구역과 다를 수 있습니다. 지역 이름은 서비스의 탐색용 표기입니다.</p><p>{credit}</p><p>geoBoundaries / Natural Earth · 포항: geoBoundaries / citypopulation.de (CC BY 3.0)</p></details>
           <footer className="page-footer">
             <span>포항 도시기본계획 시각화 · 자료 기반 화면</span>
             <span>지도 타일 © OpenStreetMap contributors</span>
