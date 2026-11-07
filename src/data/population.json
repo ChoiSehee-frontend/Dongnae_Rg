@@ -1,0 +1,20 @@
+[
+  {
+    "region": "전국",
+    "value": 51082431,
+    "date": "2026-09-30",
+    "url": "https://jumin.mois.go.kr/statMonth.do"
+  },
+  {
+    "region": "경상북도",
+    "value": 2491506,
+    "date": "2026-09-30",
+    "url": "https://jumin.mois.go.kr/statMonth.do"
+  },
+  {
+    "region": "포항시",
+    "value": 486788,
+    "date": "2026-09-30",
+    "url": "https://poma.pohang.go.kr/portal/contents.do?mid=0402070000"
+  }
+]

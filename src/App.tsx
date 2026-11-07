@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   CircleMarker,
   GeoJSON,
@@ -8,7 +8,11 @@ import {
   useMap,
 } from 'react-leaflet'
 import type { FeatureCollection, Geometry } from 'geojson'
-import type { LatLngExpression } from 'leaflet'
+import type { Map as LeafletMap, LatLngExpression } from 'leaflet'
+import population from './data/population.json'
+import { ProjectStory } from './ProjectStory'
+import { TownHome, TownPicker, TownLayer, LocateButton, credit } from './Towns'
+import { CityCharts } from './CityCharts'
 import regions from './data/regions.json'
 import boundaryJson from './data/administrative-boundaries.geojson?raw'
 import projectData from './data/projects.json'
@@ -25,7 +29,8 @@ type Project = {
   summary: string
   status: string
   source: string
-  position: [number, number]
+  url: string
+  position: [number, number] | null
 }
 
 const projects = projectData.projects as Project[]
@@ -51,19 +56,38 @@ function MapView({ center, zoom }: { center: LatLngExpression; zoom: number }) {
 }
 
 function App() {
+  const overviewMap=useRef<LeafletMap>(null)
+  const [myPoint,setMyPoint]=useState<[number,number]|null>(null)
+  const [townId,setTownId]=useState<string | null>(null)
   const [selectedProvince, setSelectedProvince] = useState<Region | null>(null)
   const [isPohangSelected, setIsPohangSelected] = useState(false)
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(()=>location.hash.split('/')[1] ?? null)
   const selectedProject = useMemo(
     () => projects.find((project) => project.id === selectedProjectId) ?? null,
     [selectedProjectId],
   )
 
+  useEffect(()=>{
+    function route(){
+      const town=location.hash.match(/^#town\/([^/]+)$/)?.[1]; setTownId(town ?? null)
+      const id=location.hash.match(/^#project\/([^/]+)$/)?.[1]
+      setSelectedProjectId(id ?? null)
+      if(town || id || location.hash==='#pohang'){setIsPohangSelected(true);setSelectedProvince(gyeongbuk)}
+    }
+    route()
+    window.addEventListener('hashchange',route)
+    return ()=>window.removeEventListener('hashchange',route)
+  },[])
+  if(townId)return <TownHome key={townId} id={townId}/>
+  if(selectedProject)return <ProjectStory project={selectedProject}/>
   const mapCenter = isPohangSelected
     ? pohangCenter
     : selectedProvince?.center ?? koreaCenter
   const mapZoom = isPohangSelected ? 11 : selectedProvince?.zoom ?? 7
 
+  const regionName = isPohangSelected ? '포항시' : selectedProvince?.name ?? '전국'
+  const pop = population.find(row => row.region === regionName)
+  function reset() { setSelectedProvince(null); setIsPohangSelected(false); setSelectedProjectId(null) }
   function chooseProvince(region: Region) {
     setSelectedProvince(region)
     setIsPohangSelected(false)
@@ -79,7 +103,7 @@ function App() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <a className="brand" href="#" aria-label="포항 도시계획 홈">
+        <a className="brand" href="#" onClick={reset} aria-label="포항 도시계획 홈">
           <span className="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
               <path d="M5 24.5 13.5 7l5 10 3-5L27 24.5H5Z" />
@@ -87,7 +111,7 @@ function App() {
             </svg>
           </span>
           <span className="brand-copy">
-            <strong>포항 도시기본계획</strong>
+            <strong>동네알기</strong>
             <span>URBAN PLAN · POHANG</span>
           </span>
         </a>
@@ -107,10 +131,12 @@ function App() {
             지도를 탐색해 지역을 선택하고<br />도시의 계획을 확인해 보세요.
           </p>
 
+          <LocateButton onLocate={point=>{setMyPoint(point);overviewMap.current?.stop().setView(point,15,{animate:false})}}/>
+          {!isPohangSelected && <TownPicker compact/>}
           <div className="region-section">
             <div className="section-label">
-              <span>전국 시·도</span>
-              <span className="small-count">17개 지역</span>
+              <span>시·도 탐색</span>
+              <span className="small-count">2021년 경계 · 17개</span>
             </div>
             <div className="region-list">
               {regionList.map((region) => (
@@ -151,7 +177,7 @@ function App() {
 
           <div className="sidebar-foot">
             <span className="foot-icon">i</span>
-            <span>지역 좌표는 지도 이동을 위한 참고점입니다.<br />경계 데이터는 아직 연결되지 않았습니다.</span>
+            <span>지역 좌표는 지도 이동을 위한 참고점입니다.<br />시·도 2021년 · 포항 2020년 경계입니다.</span>
           </div>
         </aside>
 
@@ -159,25 +185,26 @@ function App() {
           <div className="page-heading">
             <div>
               <div className="breadcrumb">
-                <span>전국</span>
-                {selectedProvince && <><span className="crumb-slash">/</span><span>{selectedProvince.name}</span></>}
+                <button onClick={reset}>전국</button>
+                {selectedProvince && <><span className="crumb-slash">/</span><button onClick={() => chooseProvince(selectedProvince)}>{selectedProvince.name}</button></>}
                 {isPohangSelected && <><span className="crumb-slash">/</span><span className="current-crumb">포항시</span></>}
               </div>
-              <h2>{isPohangSelected ? '포항의 계획을 살펴보세요' : selectedProvince ? `${selectedProvince.name} 지역을 살펴보세요` : '대한민국 도시계획 지도'}</h2>
+              <h2>{isPohangSelected ? '포항에서 내 동네를 찾아보세요' : selectedProvince ? `${selectedProvince.name} 지역을 살펴보세요` : '대한민국 도시계획 지도'}</h2>
             </div>
-            <span className="demo-badge"><span />자료 준비 중</span>
+            <span className="demo-badge">{selectedProvince && selectedProvince.name !== gyeongbuk.name ? '이 지역 상세 서비스는 준비 중' : '포항 시범 서비스'}</span>
           </div>
 
+          <div className="location-summary"><div><span>{regionName} 인구</span><strong>{pop ? pop.value.toLocaleString('ko-KR')+'명' : '자료 미확보'}</strong></div>{pop && <small>{pop.date} 기준 · 외국인 제외 · <a href={pop.url} target="_blank" rel="noreferrer">통계 출처 ↗</a></small>}</div>
           <div className="map-layout">
             <section className="map-card" aria-label="지역 지도">
               <div className="map-topline">
                 <span className="map-location">
                   <span className="location-dot" />
-                  {isPohangSelected ? '경상북도 · 포항시' : selectedProvince?.name ?? '대한민국'}
+                  {regionName} · {isPohangSelected ? '2026.10' : '2021'}년 경계
                 </span>
-                {isPohangSelected && <span className="map-hint">도시개발사업 위치</span>}
+                {isPohangSelected && <span className="map-hint">읍·면·동을 선택하세요</span>}
               </div>
-              <MapContainer
+              <MapContainer ref={overviewMap}
                 center={koreaCenter}
                 zoom={7}
                 scrollWheelZoom
@@ -189,117 +216,33 @@ function App() {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {boundaries.features.length > 0 && (
+                {isPohangSelected && <TownLayer/>}
+                {!isPohangSelected && boundaries.features.length > 0 && (
                   <GeoJSON
-                    data={boundaries}
-                    style={{
+                    key={regionName}
+                    data={{...boundaries,features:boundaries.features.filter(f=>f.properties?.name!=='포항시' || selectedProvince?.name===gyeongbuk.name)} as FeatureCollection<Geometry>}
+                    onEachFeature={(f,l)=>{ const n=String(f.properties?.name);l.bindTooltip(n);l.on('click',()=>{if(n==='포항시')selectPohang();else {const r=regionList.find(v=>v.name===n);if(r)chooseProvince(r)}})}}
+
+                    style={f=>({
                       color: '#237967',
                       weight: 2,
                       fillColor: '#78b7a0',
-                      fillOpacity: 0.18,
-                    }}
+                      fillOpacity: f?.properties?.name===regionName ? .38 : .08,
+                    })}
                   />
                 )}
-                {isPohangSelected && projects.map((project) => (
-                  <CircleMarker
-                    center={project.position}
-                    key={project.id}
-                    radius={selectedProjectId === project.id ? 9 : 7}
-                    pathOptions={{
-                      color: '#fff',
-                      weight: 3,
-                      fillColor: selectedProjectId === project.id ? '#b7653f' : '#287e6c',
-                      fillOpacity: 1,
-                    }}
-                    eventHandlers={{ click: () => setSelectedProjectId(project.id) }}
-                  >
-                    <Tooltip>{project.name}</Tooltip>
-                  </CircleMarker>
-                ))}
+                {myPoint && <CircleMarker center={myPoint} radius={8} pathOptions={{color:'#fff',weight:3,fillColor:'#1678df',fillOpacity:1}}><Tooltip>내 위치</Tooltip></CircleMarker>}
               </MapContainer>
-              <div className="map-legend">
-                <span className="legend-dot" />
-                <span>{projects.length > 0 && isPohangSelected ? '도시개발사업' : '사업 위치 자료 없음'}</span>
-              </div>
-              <div className="map-credit">지도 © OpenStreetMap contributors</div>
-              {isPohangSelected && projects.length === 0 && (
-                <div className="map-empty">
-                  <span className="empty-symbol">⌖</span>
-                  <strong>표시할 사업 위치가 없습니다</strong>
-                  <span>실제 사업 좌표 데이터가 추가되면 지도에 표시됩니다.</span>
-                </div>
-              )}
+              {myPoint && <div className="map-legend"><span aria-hidden="true" style={{color:'#1678df'}}>●</span> 내 위치</div>}
             </section>
 
             <aside className="detail-card" aria-live="polite">
-              <div className="detail-header">
-                <div className="eyebrow"><span>02</span> 사업 정보</div>
-                <span className="detail-count">{isPohangSelected ? `${projects.length}건` : '—'}</span>
-              </div>
-              {selectedProject ? (
-                <div className="project-detail">
-                  <span className="project-category">도시개발사업</span>
-                  <h3>{selectedProject.name}</h3>
-                  <div className="detail-field">
-                    <span>계획 요약</span><p>{selectedProject.summary}</p>
-                  </div>
-                  <div className="detail-field">
-                    <span>계획상 상태</span><p className="status-value">{selectedProject.status}</p>
-                  </div>
-                  <div className="detail-field">
-                    <span>출처</span><p>{selectedProject.source}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="detail-empty">
-                  <div className="empty-illustration" aria-hidden="true">
-                    <span className="illustration-ring ring-one" />
-                    <span className="illustration-ring ring-two" />
-                    <span className="illustration-center">⌖</span>
-                  </div>
-                  <strong>{isPohangSelected ? '사업 자료를 기다리고 있어요' : '지도에서 지역을 선택해 주세요'}</strong>
-                  <p>{isPohangSelected
-                    ? '실제 도시개발사업 데이터를 연결하면 지도 마커를 눌러 계획 정보를 확인할 수 있습니다.'
-                    : '경상북도를 선택한 뒤 포항시로 이동하면 사업 정보와 지역 지표를 볼 수 있어요.'}</p>
-                </div>
-              )}
-              {isPohangSelected && projects.length > 0 && (
-                <div className="project-list">
-                  <div className="section-label">사업 목록 <span className="small-count">{projects.length}건</span></div>
-                  {projects.map((project) => (
-                    <button
-                      type="button"
-                      key={project.id}
-                      className={`project-row ${selectedProjectId === project.id ? 'active' : ''}`}
-                      onClick={() => setSelectedProjectId(project.id)}
-                    >
-                      <span className="project-row-dot" />
-                      <span>{project.name}</span>
-                      <span aria-hidden="true">›</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-              <div className="detail-footnote">
-                <span className="foot-icon">i</span>
-                <span>계획상 상태는 계획서 기준이며<br />현재 추진 상황과 다를 수 있습니다.</span>
-              </div>
+              {isPohangSelected ? <TownPicker/> : <><h3>내 동네를 선택하세요</h3><p>경상북도에서 포항으로 들어가거나, 동네 이름으로 바로 검색할 수 있어요.</p></>}
             </aside>
           </div>
 
-          <section className="indicators" aria-label="포항 지역 지표">
-            <div className="indicator-intro">
-              <div className="eyebrow"><span>03</span> 지역 지표</div>
-              <h3>도시를 읽는 숫자</h3>
-              <p>계획과 함께 살펴보는 포항의 변화</p>
-            </div>
-            <Indicator title="인구" unit="명" description="인구 현황 및 추이" icon="01" />
-            <Indicator title="환경 지표" unit="" description="환경계획 핵심 지표" icon="02" />
-            <div className="indicator-disclaimer">
-              <span className="example-tag">예시 데이터</span>
-              <span>실제 통계 자료를 연결하면<br />이 영역에 표시됩니다.</span>
-            </div>
-          </section>
+          {isPohangSelected && <section className="indicators" aria-label="포항 인구 추이"><CityCharts/></section>}
+          <details className="boundary-note"><summary>지도 경계의 기준연도와 출처</summary><p>시·도는 2021년, 경북 화면의 포항 외곽은 2020년 경계입니다. 광주와 전남은 당시 경계로 나뉘어 있으며 현재 행정구역과 다를 수 있습니다. 지역 이름은 서비스의 탐색용 표기입니다.</p><p>{credit}</p><p>geoBoundaries / Natural Earth · 포항: geoBoundaries / citypopulation.de (CC BY 3.0)</p></details>
           <footer className="page-footer">
             <span>포항 도시기본계획 시각화 · 자료 기반 화면</span>
             <span>지도 타일 © OpenStreetMap contributors</span>
@@ -307,30 +250,6 @@ function App() {
         </section>
       </div>
     </main>
-  )
-}
-
-function Indicator({
-  title,
-  unit,
-  description,
-  icon,
-}: {
-  title: string
-  unit: string
-  description: string
-  icon: string
-}) {
-  return (
-    <div className="indicator-card">
-      <div className="indicator-card-top">
-        <span className="indicator-number">{icon}</span>
-        <span className="example-tag">예시 데이터</span>
-      </div>
-      <div className="indicator-title">{title}</div>
-      <div className="indicator-value">자료 연계 예정 <span>{unit}</span></div>
-      <div className="indicator-description">{description}</div>
-    </div>
   )
 }
 

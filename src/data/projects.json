@@ -1,3 +1,31 @@
 {
-  "projects": []
+  "projects": [
+    {
+      "id": "gokgang",
+      "name": "곡강지구 도시개발사업",
+      "position": [36.106108, 129.392338],
+      "summary": "도시개발 구역과 계획을 정한 사업입니다. 아래에서 고시 내용과 원문 도면을 확인할 수 있습니다.",
+      "status": "실시계획 변경인가 고시",
+      "source": "포항 2026-28",
+      "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=638365"
+    },
+    {
+      "id": "imgok",
+      "name": "임곡지구 도시개발사업",
+      "position": null,
+      "summary": "도시개발 구역과 계획을 정한 사업입니다. 아래에서 고시 내용과 원문 도면을 확인할 수 있습니다.",
+      "status": "구역 지정·개발계획 수립 고시",
+      "source": "포항 2026-111",
+      "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=632835"
+    },
+    {
+      "id": "idong",
+      "name": "이동지구 도시개발사업",
+      "position": null,
+      "summary": "도시개발 구역과 계획을 정한 사업입니다. 아래에서 고시 내용과 원문 도면을 확인할 수 있습니다.",
+      "status": "구역 지정·개발계획 수립 고시",
+      "source": "포항 2024-125",
+      "url": "https://www.eum.go.kr/web/gs/gv/gvGosiDet.jsp?seq=586183"
+    }
+  ]
 }
