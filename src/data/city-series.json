@@ -1,0 +1,64 @@
+{
+  "population": {
+    "source": "https://www.2050cnc.go.kr/storage/board/base/2025/07/01/BOARD_ATTACH_1751363989497.pdf",
+    "points": [
+      [
+        2014,
+        519368
+      ],
+      [
+        2015,
+        519584
+      ],
+      [
+        2016,
+        516775
+      ],
+      [
+        2017,
+        513832
+      ],
+      [
+        2018,
+        510013
+      ],
+      [
+        2019,
+        507025
+      ],
+      [
+        2020,
+        502916
+      ],
+      [
+        2021,
+        503852
+      ],
+      [
+        2022,
+        496650
+      ],
+      [
+        2023,
+        493033
+      ]
+    ]
+  },
+  "water": [
+    {
+      "name": "연간 급수량",
+      "unit": "㎥",
+      "year": 2023,
+      "actual": 62243778,
+      "target": null
+    },
+    {
+      "name": "1인당 1일 급수량",
+      "unit": "ℓ",
+      "year": 2023,
+      "actual": 503.5,
+      "target": null
+    }
+  ],
+  "waterSource": "https://jp.pohang.go.kr/portal/contents.do?mid=0402060000"
+}
