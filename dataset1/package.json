@@ -1,0 +1,12 @@
+{
+  "name": "dongnae-rg-workspace",
+  "private": true,
+  "workspaces": [
+    "Dongnae_Rg"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace pohang-urban-plan-visualization",
+    "build": "npm run build --workspace pohang-urban-plan-visualization",
+    "preview": "npm run preview --workspace pohang-urban-plan-visualization"
+  }
+}
