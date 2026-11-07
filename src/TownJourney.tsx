@@ -63,6 +63,5 @@ export function VoiceStep({ code, townName }: { code: string; townName: string }
   return <section className="journey-content" aria-label="시민 경험과 개선 의견">
     <div className="journey-heading"><small>STEP 4 · 시민의 경험과 제안</small><h2>나는 어떻게 생각할까?</h2><p>지도와 계획을 살펴봤다면, {townName}의 실제 생활 경험과 지역 개선 의견을 기록하는 공간</p></div>
     <Feedback id={'town:' + code} townName={townName}/>
-    <p className="journey-source">현재 의견은 사용 중인 브라우저에만 저장됩니다. 공개 의견 수집, 시청 민원 접수 및 정책 제안 전달 기능과는 연결되지 않습니다.</p>
   </section>
 }

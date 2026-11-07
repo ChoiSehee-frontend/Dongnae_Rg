@@ -3,7 +3,6 @@ import sgis from './data/sgis-population-2015-2024.json'
 
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-
 // STEP 2: 먼저 흥해읍 전체의 계획을 소개한다. 개별 사업의 상세 내용은 여기서 중복 표시하지 않는다.
 export function HeunghaePlan({ onSelect }: { onSelect: (id: string) => void }) {
   return <section className="journey-content gk-study" aria-label="흥해읍 도시기본계획과 주요 사업">
